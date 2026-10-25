@@ -250,7 +250,7 @@
           </div>
           <label class="form-checkbox-label">
             <input type="checkbox" id="checkCopySubjects" class="form-checkbox" checked>
-            <span>Fächer aus aktuellem Schuljahr übernehmen (ohne Noten)</span>
+            <span>Fächer aus aktuellem Schuljahr übernehmen ohne Noten</span>
           </label>
           <button type="submit" class="btn-primary w-full">Schuljahr erstellen</button>
         </form>
@@ -312,7 +312,7 @@
   <div id="modalDeleteSubject" class="modal-backdrop hidden">
     <div class="modal-card">
       <div class="modal-header">
-        <h3 class="modal-title">Fach unwiderruflich löschen?</h3>
+        <h3 class="modal-title">Fach löschen?</h3>
         <button class="modal-close" data-close="modalDeleteSubject">
           <svg class="icon-svg-sm" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
             <line x1="18" y1="6" x2="6" y2="18"></line>
@@ -322,12 +322,12 @@
       </div>
       <div class="modal-body">
         <p class="delete-warning-text">
-          Bist du sicher, dass du das Fach <strong id="deleteSubjectNameTarget">Fach</strong> mit allen eingetragenen Noten für dieses Schuljahr löschen möchtest?
+          Bist du sicher, dass du das Fach <strong id="deleteSubjectNameTarget">Fach</strong> mit allen Noten löschen möchtest?
         </p>
       </div>
       <div class="modal-footer">
         <button type="button" class="btn-secondary" data-close="modalDeleteSubject">Abbrechen</button>
-        <button type="button" id="btnConfirmDeleteSubject" class="btn-danger">Ja, Fach löschen</button>
+        <button type="button" id="btnConfirmDeleteSubject" class="btn-danger">Fach löschen</button>
       </div>
     </div>
   </div>
@@ -347,7 +347,7 @@
       <div class="modal-body space-y-4">
         <div class="settings-info-card">
           <p class="settings-desc">
-            Deine Noten und Schuljahre werden <strong>dauerhaft im Browser gespeichert</strong>. Mit den folgenden Funktionen kannst du eine Sicherungsdatei erstellen oder Noten auf ein anderes Gerät (z. B. Handy) übertragen.
+            Deine Noten und Schuljahre werden <strong>dauerhaft im Browser gespeichert</strong>. Mit den folgenden Funktionen kannst du eine Sicherungsdatei erstellen oder Noten auf ein anderes Gerät übertragen.
           </p>
         </div>
 
@@ -358,7 +358,7 @@
               <polyline points="7 10 12 15 17 10"/>
               <line x1="12" y1="15" x2="12" y2="3"/>
             </svg>
-            <span>Backup herunterladen (JSON)</span>
+            <span>Backup herunterladen </span>
           </button>
 
           <label class="btn-secondary w-full justify-center cursor-pointer">
