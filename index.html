@@ -1,0 +1,396 @@
+<!DOCTYPE html>
+<html lang="de" data-theme="marmor">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover, maximum-scale=1.0, user-scalable=no">
+  <title>Notenrechner</title>
+  
+  <!-- Mobile & PWA Metatags -->
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="default">
+  <meta name="apple-mobile-web-app-title" content="Noten">
+  <meta name="theme-color" content="#f1ede6">
+  <meta name="mobile-web-app-capable" content="yes">
+
+  <!-- Logo / Installierbare Web-App -->
+  <link rel="manifest" href="manifest.json">
+  <link rel="apple-touch-icon" href="Icons/apple-touch-icon.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="Icons/favicon-32.png">
+  <meta name="description" content="Eleganter, seriöser Notenrechner mit Schuljahresverwaltung und automatischer Speicherung.">
+
+  <!-- Inter Font -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <div class="app-wrapper">
+    <!-- Header -->
+    <header class="app-header">
+      <div class="header-content">
+        <div class="header-brand">
+          <div class="brand-badge">
+            <svg class="icon-svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M22 10v6M2 10l10-5 10 5-10 5z"/>
+              <path d="M6 12v5c3 3 9 3 12 0v-5"/>
+            </svg>
+          </div>
+          <div>
+            <h1 class="brand-title">Notenrechner</h1>
+            <p class="brand-subtitle">Leistungsübersicht</p>
+          </div>
+        </div>
+
+        <!-- Year Switcher Bar -->
+        <div class="header-actions">
+          <button id="yearSelectorBtn" class="btn-year-dropdown" title="Schuljahr wechseln">
+            <svg class="icon-svg-sm" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <rect width="18" height="18" x="3" y="4" rx="2" ry="2"/>
+              <line x1="16" x2="16" y1="2" y2="6"/>
+              <line x1="8" x2="8" y1="2" y2="6"/>
+              <line x1="3" x2="21" y1="10" y2="10"/>
+            </svg>
+            <span id="currentYearLabel">2024 / 2025</span>
+            <svg class="icon-svg-xs chevron-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <path d="m6 9 6 6 6-6"/>
+            </svg>
+          </button>
+          <button id="btnSettings" class="btn-icon" title="Einstellungen & Daten-Backup">
+            <svg class="icon-svg-sm" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M12.22 2h-.44a2 2 0 0 0-2 2v.18a2 2 0 0 1-1 1.73l-.43.25a2 2 0 0 1-2 0l-.15-.08a2 2 0 0 0-2.73.73l-.22.38a2 2 0 0 0 .73 2.73l.15.1a2 2 0 0 1 1 1.72v.51a2 2 0 0 1-1 1.74l-.15.09a2 2 0 0 0-.73 2.73l.22.38a2 2 0 0 0 2.73.73l.15-.08a2 2 0 0 1 2 0l.43.25a2 2 0 0 1 1 1.73V20a2 2 0 0 0 2 2h.44a2 2 0 0 0 2-2v-.18a2 2 0 0 1 1-1.73l.43-.25a2 2 0 0 1 2 0l.15.08a2 2 0 0 0 2.73-.73l.22-.39a2 2 0 0 0-.73-2.73l-.15-.08a2 2 0 0 1-1-1.74v-.5a2 2 0 0 1 1-1.74l.15-.09a2 2 0 0 0 .73-2.73l-.22-.38a2 2 0 0 0-2.73-.73l-.15.08a2 2 0 0 1-2 0l-.43-.25a2 2 0 0 1-1-1.73V4a2 2 0 0 0-2-2z"/>
+              <circle cx="12" cy="12" r="3"/>
+            </svg>
+          </button>
+        </div>
+      </div>
+    </header>
+
+    <!-- Main Container -->
+    <main class="main-content">
+      <!-- VIEW 1: Dashboard (Fächer-Übersicht) -->
+      <section id="viewDashboard" class="app-view active-view">
+        <!-- Gesamtschnitt Card -->
+        <div class="summary-card">
+          <div class="summary-meta">
+            <span class="summary-label">Aktueller Gesamtschnitt</span>
+            <span id="summarySubjectCount" class="summary-subtext">0 Fächer bewertet</span>
+          </div>
+          <div class="summary-score-container">
+            <span id="overallAverageDisplay" class="summary-score">–.–</span>
+            <div id="summaryBadge" class="summary-badge hidden">
+              <span id="summaryBadgeText">Gut</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Fächer Sektion -->
+        <div class="section-header">
+          <div class="section-title-group">
+            <h2 class="section-title">Fächer</h2>
+            <span id="subjectCountBadge" class="count-pill">0</span>
+          </div>
+          <button id="btnOpenAddSubject" class="btn-primary-sm">
+            <svg class="icon-svg-xs" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+              <line x1="12" y1="5" x2="12" y2="19"></line>
+              <line x1="5" y1="12" x2="19" y2="12"></line>
+            </svg>
+            <span>Fach hinzufügen</span>
+          </button>
+        </div>
+
+        <!-- Fächer Liste / Grid -->
+        <div id="subjectsList" class="subjects-grid">
+          <!-- Dynamisch durch app.js generiert -->
+        </div>
+
+        <!-- Leerer Zustand -->
+        <div id="emptySubjectsState" class="empty-state hidden">
+          <div class="empty-icon-box">
+            <svg class="icon-svg-lg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M4 19.5v-15A2.5 2.5 0 0 1 6.5 2H20v20H6.5a2.5 2.5 0 0 1-2.5-2.5Z"/>
+              <path d="M6 6h10"/>
+              <path d="M6 10h10"/>
+            </svg>
+          </div>
+          <h3 class="empty-title">Noch keine Fächer angelegt</h3>
+          <p class="empty-desc">Füge dein erstes Fach für dieses Schuljahr hinzu, um Noten einzutragen.</p>
+          <button class="btn-secondary" id="btnEmptyAddSubject">Erstes Fach erstellen</button>
+        </div>
+      </section>
+
+      <!-- VIEW 2: Fach-Detailansicht -->
+      <section id="viewDetail" class="app-view">
+        <!-- Detail Navigation -->
+        <div class="detail-nav-bar">
+          <button id="btnBackToDashboard" class="btn-back">
+            <svg class="icon-svg-sm" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+              <path d="m15 18-6-6 6-6"/>
+            </svg>
+            <span>Übersicht</span>
+          </button>
+          <button id="btnDeleteSubjectModal" class="btn-danger-icon" title="Fach löschen">
+            <svg class="icon-svg-sm" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M3 6h18"/>
+              <path d="M19 6v14c0 1-1 2-2 2H7c-1 0-2-1-2-2V6"/>
+              <path d="M8 6V4c0-1 1-2 2-2h4c1 0 2 1 2 2v2"/>
+              <line x1="10" x2="10" y1="11" y2="17"/>
+              <line x1="14" x2="14" y1="11" y2="17"/>
+            </svg>
+          </button>
+        </div>
+
+        <!-- Detail Header Card -->
+        <div class="detail-header-card">
+          <div class="detail-header-info">
+            <div class="detail-badge-row">
+              <span id="detailTypeBadge" class="type-pill">Hauptfach</span>
+              <span id="detailWeightingHint" class="weighting-hint">Gewichtung: 2:1</span>
+            </div>
+            <h2 id="detailSubjectTitle" class="detail-subject-title">Mathematik</h2>
+          </div>
+          <div class="detail-score-box">
+            <span class="detail-score-label">Schnitt</span>
+            <span id="detailSubjectAverage" class="detail-score-val">–.–</span>
+          </div>
+        </div>
+
+        <!-- Noten Hinzufügen Sektion -->
+        <div class="grade-input-container">
+          <!-- Große Noten (Nur Hauptfächer) -->
+          <div id="inputBoxGross" class="grade-input-group">
+            <div class="input-group-header">
+              <span class="input-group-title">Große Note hinzufügen</span>
+              <span class="input-group-tag">Schulaufgabe • 2-fach</span>
+            </div>
+            <div class="grade-buttons-row">
+              <button type="button" class="btn-grade btn-grade-gross" data-grade="1">1</button>
+              <button type="button" class="btn-grade btn-grade-gross" data-grade="2">2</button>
+              <button type="button" class="btn-grade btn-grade-gross" data-grade="3">3</button>
+              <button type="button" class="btn-grade btn-grade-gross" data-grade="4">4</button>
+              <button type="button" class="btn-grade btn-grade-gross" data-grade="5">5</button>
+              <button type="button" class="btn-grade btn-grade-gross" data-grade="6">6</button>
+            </div>
+          </div>
+
+          <!-- Kleine Noten -->
+          <div class="grade-input-group">
+            <div class="input-group-header">
+              <span class="input-group-title" id="kleinGroupTitle">Kleine Note hinzufügen</span>
+              <span class="input-group-tag" id="kleinGroupTag">Ex / Mündlich / Test • 1-fach</span>
+            </div>
+            <div class="grade-buttons-row">
+              <button type="button" class="btn-grade btn-grade-klein" data-grade="1">1</button>
+              <button type="button" class="btn-grade btn-grade-klein" data-grade="2">2</button>
+              <button type="button" class="btn-grade btn-grade-klein" data-grade="3">3</button>
+              <button type="button" class="btn-grade btn-grade-klein" data-grade="4">4</button>
+              <button type="button" class="btn-grade btn-grade-klein" data-grade="5">5</button>
+              <button type="button" class="btn-grade btn-grade-klein" data-grade="6">6</button>
+            </div>
+          </div>
+        </div>
+
+        <!-- Listen der eingetragenen Noten -->
+        <div class="grades-management-container">
+          <!-- Liste Große Noten -->
+          <div id="gradesBoxGross" class="grades-list-card">
+            <div class="grades-list-header">
+              <div class="list-title-with-count">
+                <span class="list-title">Schulaufgaben</span>
+                <span id="countGrossBadge" class="count-pill-subtle">0</span>
+              </div>
+              <span id="avgGrossBadge" class="list-sub-avg">Ø –.–</span>
+            </div>
+            <div id="listGrossItems" class="grades-chips-list">
+              <!-- Dynamisch -->
+            </div>
+            <div id="emptyGrossState" class="empty-list-note">Keine Schulaufgaben eingetragen</div>
+          </div>
+
+          <!-- Liste Kleine Noten -->
+          <div class="grades-list-card">
+            <div class="grades-list-header">
+              <div class="list-title-with-count">
+                <span class="list-title" id="listKleinTitle">Kleine Noten</span>
+                <span id="countKleinBadge" class="count-pill-subtle">0</span>
+              </div>
+              <span id="avgKleinBadge" class="list-sub-avg">Ø –.–</span>
+            </div>
+            <div id="listKleinItems" class="grades-chips-list">
+              <!-- Dynamisch -->
+            </div>
+            <div id="emptyKleinState" class="empty-list-note">Keine Noten eingetragen</div>
+          </div>
+        </div>
+      </section>
+    </main>
+  </div>
+
+  <!-- MODAL: Schuljahr-Verwaltung & Wechseln -->
+  <div id="modalYears" class="modal-backdrop hidden">
+    <div class="modal-card">
+      <div class="modal-header">
+        <h3 class="modal-title">Schuljahre verwalten</h3>
+        <button class="modal-close" data-close="modalYears">
+          <svg class="icon-svg-sm" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <line x1="18" y1="6" x2="6" y2="18"></line>
+            <line x1="6" y1="6" x2="18" y2="18"></line>
+          </svg>
+        </button>
+      </div>
+
+      <div class="modal-body">
+        <label class="form-label">Aktives Schuljahr auswählen:</label>
+        <div id="yearsRadioList" class="years-list-group">
+          <!-- Dynamisch -->
+        </div>
+
+        <div class="modal-divider"></div>
+
+        <h4 class="submodal-title">Neues Schuljahr anlegen</h4>
+        <form id="formNewYear" class="space-y-3">
+          <div>
+            <label for="inputYearName" class="form-label">Bezeichnung</label>
+            <input type="text" id="inputYearName" class="form-input" placeholder="z. B. 2025 / 2026 oder 11. Klasse" required>
+          </div>
+          <label class="form-checkbox-label">
+            <input type="checkbox" id="checkCopySubjects" class="form-checkbox" checked>
+            <span>Fächer aus aktuellem Schuljahr übernehmen (ohne Noten)</span>
+          </label>
+          <button type="submit" class="btn-primary w-full">Schuljahr erstellen</button>
+        </form>
+      </div>
+    </div>
+  </div>
+
+  <!-- MODAL: Neues Fach anlegen -->
+  <div id="modalAddSubject" class="modal-backdrop hidden">
+    <div class="modal-card">
+      <div class="modal-header">
+        <h3 class="modal-title">Neues Fach anlegen</h3>
+        <button class="modal-close" data-close="modalAddSubject">
+          <svg class="icon-svg-sm" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <line x1="18" y1="6" x2="6" y2="18"></line>
+            <line x1="6" y1="6" x2="18" y2="18"></line>
+          </svg>
+        </button>
+      </div>
+
+      <form id="formAddSubject">
+        <div class="modal-body">
+          <div class="form-group">
+            <label for="inputSubjectName" class="form-label">Name des Fachs</label>
+            <input type="text" id="inputSubjectName" class="form-input" placeholder="z. B. Mathematik, Deutsch, Physik" required autocomplete="off">
+          </div>
+
+          <div class="form-group">
+            <label class="form-label">Art des Fachs</label>
+            <div class="type-selector-grid">
+              <label class="type-option-card">
+                <input type="radio" name="subjectType" value="hauptfach" checked>
+                <div class="type-option-content">
+                  <span class="type-option-name">Hauptfach</span>
+                  <span class="type-option-sub">Schulaufgaben (2-fach) + Exen/mündlich</span>
+                </div>
+              </label>
+
+              <label class="type-option-card">
+                <input type="radio" name="subjectType" value="nebenfach">
+                <div class="type-option-content">
+                  <span class="type-option-name">Nebenfach</span>
+                  <span class="type-option-sub">Nur kleine Leistungsnachweise (1-fach)</span>
+                </div>
+              </label>
+            </div>
+          </div>
+        </div>
+
+        <div class="modal-footer">
+          <button type="button" class="btn-secondary" data-close="modalAddSubject">Abbrechen</button>
+          <button type="submit" class="btn-primary">Fach erstellen</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- MODAL: Fach löschen Bestätigung -->
+  <div id="modalDeleteSubject" class="modal-backdrop hidden">
+    <div class="modal-card">
+      <div class="modal-header">
+        <h3 class="modal-title">Fach unwiderruflich löschen?</h3>
+        <button class="modal-close" data-close="modalDeleteSubject">
+          <svg class="icon-svg-sm" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <line x1="18" y1="6" x2="6" y2="18"></line>
+            <line x1="6" y1="6" x2="18" y2="18"></line>
+          </svg>
+        </button>
+      </div>
+      <div class="modal-body">
+        <p class="delete-warning-text">
+          Bist du sicher, dass du das Fach <strong id="deleteSubjectNameTarget">Fach</strong> mit allen eingetragenen Noten für dieses Schuljahr löschen möchtest?
+        </p>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn-secondary" data-close="modalDeleteSubject">Abbrechen</button>
+        <button type="button" id="btnConfirmDeleteSubject" class="btn-danger">Ja, Fach löschen</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- MODAL: Einstellungen & Daten-Backup -->
+  <div id="modalSettings" class="modal-backdrop hidden">
+    <div class="modal-card">
+      <div class="modal-header">
+        <h3 class="modal-title">Einstellungen & Datensicherung</h3>
+        <button class="modal-close" data-close="modalSettings">
+          <svg class="icon-svg-sm" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <line x1="18" y1="6" x2="6" y2="18"></line>
+            <line x1="6" y1="6" x2="18" y2="18"></line>
+          </svg>
+        </button>
+      </div>
+      <div class="modal-body space-y-4">
+        <div class="settings-info-card">
+          <p class="settings-desc">
+            Deine Noten und Schuljahre werden <strong>dauerhaft im Browser gespeichert</strong>. Mit den folgenden Funktionen kannst du eine Sicherungsdatei erstellen oder Noten auf ein anderes Gerät (z. B. Handy) übertragen.
+          </p>
+        </div>
+
+        <div>
+          <label class="form-label">Farbstil</label>
+          <div id="themePicker" class="theme-picker"></div>
+        </div>
+
+        <div class="settings-actions-group">
+          <button type="button" id="btnExportData" class="btn-secondary w-full justify-center">
+            <svg class="icon-svg-sm" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/>
+              <polyline points="7 10 12 15 17 10"/>
+              <line x1="12" y1="15" x2="12" y2="3"/>
+            </svg>
+            <span>Backup herunterladen (JSON)</span>
+          </button>
+
+          <label class="btn-secondary w-full justify-center cursor-pointer">
+            <svg class="icon-svg-sm" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/>
+              <polyline points="17 8 12 3 7 8"/>
+              <line x1="12" y1="3" x2="12" y2="15"/>
+            </svg>
+            <span>Backup wiederherstellen</span>
+            <input type="file" id="inputFileImport" accept=".json" class="hidden">
+          </label>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Toast Notification -->
+  <div id="toast" class="toast hidden">
+    <span id="toastMessage">Mitteilung</span>
+  </div>
+
+  <script src="app.js"></script>
+</body>
+</html>
